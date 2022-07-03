@@ -18,6 +18,7 @@ export function Api({ stack }: StackContext) {
           RDS_DATABASE: db.defaultDatabaseName,
         },
       },
+      authorizer: "iam"
     },
     routes: {
       "GET    /todos": "todo/functions/list.main",

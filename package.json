@@ -5,8 +5,9 @@
   "scripts": {
     "start": "sst start",
     "build": "sst build",
+    "destroy": "sst cdk destroy production-todo-sst-Api production-todo-sst-Database",
     "deploy": "sst deploy --stage=production",
-    "remove": "sst remove",
+    "remove": "sst remove --stage=production",
     "console": "sst console",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
