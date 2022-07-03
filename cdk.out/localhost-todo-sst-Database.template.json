@@ -1,0 +1,1174 @@
+{
+ "Resources": {
+  "SSTMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/SSTMetadata",
+    "sst:version": "1.2.36",
+    "sst:constructs": [
+     {
+      "id": "Database",
+      "addr": "c83cf0506ad7d36c753bacb3204403ecb408108a3f",
+      "stack": "localhost-todo-sst-Database",
+      "type": "RDS",
+      "data": {
+       "engine": "postgresql10.14",
+       "secretArn": {
+        "Ref": "ClusterCredentialsAttachment18127CAD"
+       },
+       "types": "services/todo/infrastructure/rds/types.ts",
+       "clusterArn": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":rds:us-east-1:611136087147:cluster:",
+          {
+           "Ref": "DatabaseCluster5B53A178"
+          }
+         ]
+        ]
+       },
+       "clusterIdentifier": {
+        "Ref": "DatabaseCluster5B53A178"
+       },
+       "defaultDatabaseName": "todo",
+       "migrator": {
+        "node": "c849a3e699ee523a532f3caa40eed87c1dcf21c01c",
+        "stack": "localhost-todo-sst-Database"
+       }
+      }
+     },
+     {
+      "id": "MigrationFunction",
+      "addr": "c849a3e699ee523a532f3caa40eed87c1dcf21c01c",
+      "stack": "localhost-todo-sst-Database",
+      "type": "Function",
+      "data": {
+       "localId": "localhost-todo-sst-Database-Database-MigrationFunction",
+       "arn": {
+        "Fn::GetAtt": [
+         "DatabaseMigrationFunction9CBE9EA5",
+         "Arn"
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "ClusterCredentials634F2538": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": "TodoDbClusterCredentials",
+    "GenerateSecretString": {
+     "ExcludeCharacters": "\"@/\\ '",
+     "GenerateStringKey": "password",
+     "PasswordLength": 30,
+     "SecretStringTemplate": "{\"username\":\"clusteradmin\"}"
+    },
+    "Name": "TodoDbClusterCredentials",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/ClusterCredentials/Resource"
+   }
+  },
+  "ClusterCredentialsAttachment18127CAD": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "ClusterCredentials634F2538"
+    },
+    "TargetId": {
+     "Ref": "DatabaseCluster5B53A178"
+    },
+    "TargetType": "AWS::RDS::DBCluster"
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/ClusterCredentials/Attachment/Resource"
+   }
+  },
+  "Databasevpc5A8A9FAE": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/Resource"
+   }
+  },
+  "DatabasevpcPublicSubnet1SubnetF05319EF": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.0.0/19",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc/PublicSubnet1"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/PublicSubnet1/Subnet"
+   }
+  },
+  "DatabasevpcPublicSubnet1RouteTableD97C5D18": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc/PublicSubnet1"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/PublicSubnet1/RouteTable"
+   }
+  },
+  "DatabasevpcPublicSubnet1RouteTableAssociationC565A767": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcPublicSubnet1RouteTableD97C5D18"
+    },
+    "SubnetId": {
+     "Ref": "DatabasevpcPublicSubnet1SubnetF05319EF"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/PublicSubnet1/RouteTableAssociation"
+   }
+  },
+  "DatabasevpcPublicSubnet1DefaultRoute75E4BC4A": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcPublicSubnet1RouteTableD97C5D18"
+    },
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "DatabasevpcIGWD5E99159"
+    }
+   },
+   "DependsOn": [
+    "DatabasevpcVPCGW06A0488A"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/PublicSubnet1/DefaultRoute"
+   }
+  },
+  "DatabasevpcPublicSubnet2Subnet80DC541F": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.32.0/19",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc/PublicSubnet2"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/PublicSubnet2/Subnet"
+   }
+  },
+  "DatabasevpcPublicSubnet2RouteTableF6BF59D7": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc/PublicSubnet2"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/PublicSubnet2/RouteTable"
+   }
+  },
+  "DatabasevpcPublicSubnet2RouteTableAssociation47FF4D17": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcPublicSubnet2RouteTableF6BF59D7"
+    },
+    "SubnetId": {
+     "Ref": "DatabasevpcPublicSubnet2Subnet80DC541F"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/PublicSubnet2/RouteTableAssociation"
+   }
+  },
+  "DatabasevpcPublicSubnet2DefaultRoute096CE322": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcPublicSubnet2RouteTableF6BF59D7"
+    },
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "DatabasevpcIGWD5E99159"
+    }
+   },
+   "DependsOn": [
+    "DatabasevpcVPCGW06A0488A"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/PublicSubnet2/DefaultRoute"
+   }
+  },
+  "DatabasevpcPublicSubnet3SubnetEFCDE911": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "AvailabilityZone": "us-east-1c",
+    "CidrBlock": "10.0.64.0/19",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc/PublicSubnet3"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/PublicSubnet3/Subnet"
+   }
+  },
+  "DatabasevpcPublicSubnet3RouteTable19259839": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc/PublicSubnet3"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/PublicSubnet3/RouteTable"
+   }
+  },
+  "DatabasevpcPublicSubnet3RouteTableAssociationDAAB0455": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcPublicSubnet3RouteTable19259839"
+    },
+    "SubnetId": {
+     "Ref": "DatabasevpcPublicSubnet3SubnetEFCDE911"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/PublicSubnet3/RouteTableAssociation"
+   }
+  },
+  "DatabasevpcPublicSubnet3DefaultRoute8B6C2740": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcPublicSubnet3RouteTable19259839"
+    },
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "DatabasevpcIGWD5E99159"
+    }
+   },
+   "DependsOn": [
+    "DatabasevpcVPCGW06A0488A"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/PublicSubnet3/DefaultRoute"
+   }
+  },
+  "DatabasevpcIsolatedSubnet1Subnet5FDD7388": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.96.0/19",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet1"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet1/Subnet"
+   }
+  },
+  "DatabasevpcIsolatedSubnet1RouteTableA8307814": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet1"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet1/RouteTable"
+   }
+  },
+  "DatabasevpcIsolatedSubnet1RouteTableAssociationE6AF4D27": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcIsolatedSubnet1RouteTableA8307814"
+    },
+    "SubnetId": {
+     "Ref": "DatabasevpcIsolatedSubnet1Subnet5FDD7388"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet1/RouteTableAssociation"
+   }
+  },
+  "DatabasevpcIsolatedSubnet2Subnet4FCB1DE0": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.128.0/19",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet2"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet2/Subnet"
+   }
+  },
+  "DatabasevpcIsolatedSubnet2RouteTableF8A8C476": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet2"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet2/RouteTable"
+   }
+  },
+  "DatabasevpcIsolatedSubnet2RouteTableAssociation82B9FD20": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcIsolatedSubnet2RouteTableF8A8C476"
+    },
+    "SubnetId": {
+     "Ref": "DatabasevpcIsolatedSubnet2Subnet4FCB1DE0"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet2/RouteTableAssociation"
+   }
+  },
+  "DatabasevpcIsolatedSubnet3Subnet0F8E594D": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "AvailabilityZone": "us-east-1c",
+    "CidrBlock": "10.0.160.0/19",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet3"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet3/Subnet"
+   }
+  },
+  "DatabasevpcIsolatedSubnet3RouteTable7B7A7336": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet3"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet3/RouteTable"
+   }
+  },
+  "DatabasevpcIsolatedSubnet3RouteTableAssociation979FA85C": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "DatabasevpcIsolatedSubnet3RouteTable7B7A7336"
+    },
+    "SubnetId": {
+     "Ref": "DatabasevpcIsolatedSubnet3Subnet0F8E594D"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/IsolatedSubnet3/RouteTableAssociation"
+   }
+  },
+  "DatabasevpcIGWD5E99159": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "localhost-todo-sst-Database/Database/vpc"
+     },
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/IGW"
+   }
+  },
+  "DatabasevpcVPCGW06A0488A": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    },
+    "InternetGatewayId": {
+     "Ref": "DatabasevpcIGWD5E99159"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/vpc/VPCGW"
+   }
+  },
+  "DatabaseClusterSubnets5540150D": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnets for Cluster database",
+    "SubnetIds": [
+     {
+      "Ref": "DatabasevpcIsolatedSubnet1Subnet5FDD7388"
+     },
+     {
+      "Ref": "DatabasevpcIsolatedSubnet2Subnet4FCB1DE0"
+     },
+     {
+      "Ref": "DatabasevpcIsolatedSubnet3Subnet0F8E594D"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/Cluster/Subnets/Default"
+   }
+  },
+  "DatabaseClusterSecurityGroupFEF1426A": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "RDS security group",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Databasevpc5A8A9FAE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/Cluster/SecurityGroup/Resource"
+   }
+  },
+  "DatabaseCluster5B53A178": {
+   "Type": "AWS::RDS::DBCluster",
+   "Properties": {
+    "Engine": "aurora-postgresql",
+    "DatabaseName": "todo",
+    "DBClusterIdentifier": "localhost-todo-sst-database",
+    "DBClusterParameterGroupName": "default.aurora-postgresql10",
+    "DBSubnetGroupName": {
+     "Ref": "DatabaseClusterSubnets5540150D"
+    },
+    "EnableHttpEndpoint": true,
+    "EngineMode": "serverless",
+    "EngineVersion": "10.14",
+    "MasterUsername": "clusteradmin",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "ClusterCredentials634F2538"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "ScalingConfiguration": {
+     "AutoPause": true,
+     "MaxCapacity": 16,
+     "MinCapacity": 2,
+     "SecondsUntilAutoPause": 300
+    },
+    "StorageEncrypted": true,
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ],
+    "VpcSecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "DatabaseClusterSecurityGroupFEF1426A",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Snapshot",
+   "DeletionPolicy": "Snapshot",
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/Cluster/Resource"
+   }
+  },
+  "DatabaseMigrationFunctionServiceRoleE25C2000": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/MigrationFunction/ServiceRole/Resource"
+   }
+  },
+  "DatabaseMigrationFunctionServiceRoleDefaultPolicyBAA52D03": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": "rds-data:*",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":rds:us-east-1:611136087147:cluster:",
+          {
+           "Ref": "DatabaseCluster5B53A178"
+          }
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Ref": "ClusterCredentialsAttachment18127CAD"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "DatabaseMigrationFunctionServiceRoleDefaultPolicyBAA52D03",
+    "Roles": [
+     {
+      "Ref": "DatabaseMigrationFunctionServiceRoleE25C2000"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/MigrationFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "DatabaseMigrationFunction9CBE9EA5": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-611136087147-us-east-1",
+     "S3Key": "8d8d84d1fb7634a9479938d40ca2b3605c640a55fadc141402902ae02ec628ab.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "DatabaseMigrationFunctionServiceRoleE25C2000",
+      "Arn"
+     ]
+    },
+    "Environment": {
+     "Variables": {
+      "RDS_ARN": {
+       "Fn::Join": [
+        "",
+        [
+         "arn:",
+         {
+          "Ref": "AWS::Partition"
+         },
+         ":rds:us-east-1:611136087147:cluster:",
+         {
+          "Ref": "DatabaseCluster5B53A178"
+         }
+        ]
+       ]
+      },
+      "RDS_SECRET": {
+       "Ref": "ClusterCredentialsAttachment18127CAD"
+      },
+      "RDS_DATABASE": "todo",
+      "RDS_ENGINE_MODE": "postgres",
+      "RDS_MIGRATIONS_PATH": "sst_rds_migration_scripts",
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "EphemeralStorage": {
+     "Size": 512
+    },
+    "Handler": "@serverless-stack/resources/dist/RDS_migrator/index.handler",
+    "MemorySize": 1024,
+    "Runtime": "nodejs16.x",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ],
+    "Timeout": 900,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "DatabaseMigrationFunctionServiceRoleDefaultPolicyBAA52D03",
+    "DatabaseMigrationFunctionServiceRoleE25C2000"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/MigrationFunction/Resource",
+    "aws:asset:path": "asset.8d8d84d1fb7634a9479938d40ca2b3605c640a55fadc141402902ae02ec628ab",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "DatabaseMigrationHandlerServiceRoleCEC465F9": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/MigrationHandler/ServiceRole/Resource"
+   }
+  },
+  "DatabaseMigrationHandlerServiceRoleDefaultPolicy9F235EF3": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DatabaseMigrationFunction9CBE9EA5",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DatabaseMigrationFunction9CBE9EA5",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "DatabaseMigrationHandlerServiceRoleDefaultPolicy9F235EF3",
+    "Roles": [
+     {
+      "Ref": "DatabaseMigrationHandlerServiceRoleCEC465F9"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/MigrationHandler/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "DatabaseMigrationHandler910C33D6": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-611136087147-us-east-1",
+     "S3Key": "0a036e96d95ebeedd8ba9197c3d33c8f5d6060322d8637b0b7ac3bfac6054f87.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "DatabaseMigrationHandlerServiceRoleCEC465F9",
+      "Arn"
+     ]
+    },
+    "Handler": "index.handler",
+    "MemorySize": 1024,
+    "Runtime": "nodejs16.x",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ],
+    "Timeout": 900
+   },
+   "DependsOn": [
+    "DatabaseMigrationHandlerServiceRoleDefaultPolicy9F235EF3",
+    "DatabaseMigrationHandlerServiceRoleCEC465F9"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/MigrationHandler/Resource",
+    "aws:asset:path": "asset.0a036e96d95ebeedd8ba9197c3d33c8f5d6060322d8637b0b7ac3bfac6054f87",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "DatabaseMigrationResource8CDAF872": {
+   "Type": "Custom::SSTScript",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "DatabaseMigrationHandler910C33D6",
+      "Arn"
+     ]
+    },
+    "UserCreateFunction": {
+     "Ref": "DatabaseMigrationFunction9CBE9EA5"
+    },
+    "UserUpdateFunction": {
+     "Ref": "DatabaseMigrationFunction9CBE9EA5"
+    },
+    "UserParams": "{}",
+    "MigrationsHash": "3c5a3dc8a899ad79b7cc1e22816253e6"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/Database/MigrationResource/Default"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/2VRTW/CMAz9LdxNNtjHHToN7VYVxBW5qdcF2gTFCQhV+e9LP2jRdvLz84v9HC/F8lU8z/DKc1mc5pXKRbN1KE+QfOuM2HgrCWL50DBJS45r1FiSjbIub3UD6sMObUlu5WKTn5r0g+BvJQDJpWj2Z9lq9mkCqc8rJbc+10PjEWXGO9phXtHET9yK2UiFThk9iiG16oKOph5f2pGNeBPZK96GoUP2YDi69Va528Yafx7sT0QAW3C7vb2QrYg5qTzHxtAPGh99rP8RgzJAhXVeoGg+vZZ303ccQGEtmsz0q3YxNfFbOsM9CsAvB2SO5xCrNsRcrL08kVsjU4Dxcl01HrRUuoQkjjf1vRZAm4LEkZ8ui3exeBOL2ZGVmluvnapJZH38Be4Is2UiAgAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Database/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ExportsOutputRefDatabaseCluster5B53A178FF23F606": {
+   "Value": {
+    "Ref": "DatabaseCluster5B53A178"
+   },
+   "Export": {
+    "Name": "localhost-todo-sst-Database:ExportsOutputRefDatabaseCluster5B53A178FF23F606"
+   }
+  },
+  "ExportsOutputRefClusterCredentialsAttachment18127CAD3A3909CB": {
+   "Value": {
+    "Ref": "ClusterCredentialsAttachment18127CAD"
+   },
+   "Export": {
+    "Name": "localhost-todo-sst-Database:ExportsOutputRefClusterCredentialsAttachment18127CAD3A3909CB"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

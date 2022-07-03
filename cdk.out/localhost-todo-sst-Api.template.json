@@ -1,0 +1,713 @@
+{
+ "Resources": {
+  "SSTMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/SSTMetadata",
+    "sst:version": "1.2.36",
+    "sst:constructs": [
+     {
+      "id": "todo-api",
+      "addr": "c8bd9f72a7eb84812a03557c4359ac730a1702d240",
+      "stack": "localhost-todo-sst-Api",
+      "type": "Api",
+      "data": {
+       "graphql": false,
+       "url": {
+        "Fn::Join": [
+         "",
+         [
+          "https://",
+          {
+           "Ref": "todoapiApiAECA3C41"
+          },
+          ".execute-api.us-east-1.",
+          {
+           "Ref": "AWS::URLSuffix"
+          },
+          "/"
+         ]
+        ]
+       },
+       "httpApiId": {
+        "Ref": "todoapiApiAECA3C41"
+       },
+       "routes": [
+        {
+         "type": "function",
+         "route": "GET /todos",
+         "fn": {
+          "node": "c87464d9e5cf27194ee1c8b824c5f5d6192ecd4719",
+          "stack": "localhost-todo-sst-Api"
+         }
+        },
+        {
+         "type": "function",
+         "route": "POST /todos",
+         "fn": {
+          "node": "c83032b9ab24bf195211304c3edc5862c535dfd0ad",
+          "stack": "localhost-todo-sst-Api"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "id": "Lambda_GET_--todos",
+      "addr": "c87464d9e5cf27194ee1c8b824c5f5d6192ecd4719",
+      "stack": "localhost-todo-sst-Api",
+      "type": "Function",
+      "data": {
+       "localId": "localhost-todo-sst-Api-todo-api-Lambda_GET_-todos",
+       "arn": {
+        "Fn::GetAtt": [
+         "todoapiLambdaGETtodosCECB16B3",
+         "Arn"
+        ]
+       }
+      }
+     },
+     {
+      "id": "Lambda_POST_--todos",
+      "addr": "c83032b9ab24bf195211304c3edc5862c535dfd0ad",
+      "stack": "localhost-todo-sst-Api",
+      "type": "Function",
+      "data": {
+       "localId": "localhost-todo-sst-Api-todo-api-Lambda_POST_-todos",
+       "arn": {
+        "Fn::GetAtt": [
+         "todoapiLambdaPOSTtodosFAF8A258",
+         "Arn"
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "todoapiApiAECA3C41": {
+   "Type": "AWS::ApiGatewayV2::Api",
+   "Properties": {
+    "CorsConfiguration": {
+     "AllowHeaders": [
+      "*"
+     ],
+     "AllowMethods": [
+      "*"
+     ],
+     "AllowOrigins": [
+      "*"
+     ]
+    },
+    "Name": "localhost-todo-sst-todo-api",
+    "ProtocolType": "HTTP",
+    "Tags": {
+     "sst:app": "todo-sst",
+     "sst:stage": "localhost"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Api/Resource"
+   }
+  },
+  "todoapiApiDefaultStage289181B3": {
+   "Type": "AWS::ApiGatewayV2::Stage",
+   "Properties": {
+    "ApiId": {
+     "Ref": "todoapiApiAECA3C41"
+    },
+    "StageName": "$default",
+    "AccessLogSettings": {
+     "DestinationArn": {
+      "Fn::GetAtt": [
+       "todoapiLogGroupE11F493B",
+       "Arn"
+      ]
+     },
+     "Format": "{\"requestTime\":\"$context.requestTime\",\"requestId\":\"$context.requestId\",\"httpMethod\":\"$context.httpMethod\",\"path\":\"$context.path\",\"routeKey\":\"$context.routeKey\",\"status\":$context.status,\"responseLatency\":$context.responseLatency,\"integrationRequestId\":\"$context.integration.requestId\",\"integrationStatus\":\"$context.integration.status\",\"integrationLatency\":\"$context.integration.latency\",\"integrationServiceStatus\":\"$context.integration.integrationStatus\",\"ip\":\"$context.identity.sourceIp\",\"userAgent\":\"$context.identity.userAgent\",\"cognitoIdentityId\":\"$context.identity.cognitoIdentityId\"}"
+    },
+    "AutoDeploy": true,
+    "Tags": {
+     "sst:app": "todo-sst",
+     "sst:stage": "localhost"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Api/DefaultStage/Resource"
+   }
+  },
+  "todoapiLogGroupE11F493B": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/vendedlogs/apis/localhost-todo-sst-todo-api-",
+       {
+        "Ref": "todoapiApiAECA3C41"
+       },
+       "/default"
+      ]
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/LogGroup/Resource"
+   }
+  },
+  "todoapiLambdaGETtodosServiceRoleCBB56AC4": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Lambda_GET_--todos/ServiceRole/Resource"
+   }
+  },
+  "todoapiLambdaGETtodosServiceRoleDefaultPolicy683067AA": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": "rds-data:*",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":rds:us-east-1:611136087147:cluster:",
+          {
+           "Fn::ImportValue": "localhost-todo-sst-Database:ExportsOutputRefDatabaseCluster5B53A178FF23F606"
+          }
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "localhost-todo-sst-Database:ExportsOutputRefClusterCredentialsAttachment18127CAD3A3909CB"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "todoapiLambdaGETtodosServiceRoleDefaultPolicy683067AA",
+    "Roles": [
+     {
+      "Ref": "todoapiLambdaGETtodosServiceRoleCBB56AC4"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Lambda_GET_--todos/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "todoapiLambdaGETtodosCECB16B3": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-611136087147-us-east-1",
+     "S3Key": "fd2a2453d64a118f6376dd55284038a80ea0894279813871e091a0ba0b3184c8.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "todoapiLambdaGETtodosServiceRoleCBB56AC4",
+      "Arn"
+     ]
+    },
+    "Environment": {
+     "Variables": {
+      "RDS_SECRET_ARN": {
+       "Fn::ImportValue": "localhost-todo-sst-Database:ExportsOutputRefClusterCredentialsAttachment18127CAD3A3909CB"
+      },
+      "RDS_ARN": {
+       "Fn::Join": [
+        "",
+        [
+         "arn:",
+         {
+          "Ref": "AWS::Partition"
+         },
+         ":rds:us-east-1:611136087147:cluster:",
+         {
+          "Fn::ImportValue": "localhost-todo-sst-Database:ExportsOutputRefDatabaseCluster5B53A178FF23F606"
+         }
+        ]
+       ]
+      },
+      "RDS_DATABASE": "todo",
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "EphemeralStorage": {
+     "Size": 512
+    },
+    "Handler": "services/todo/functions/list.main",
+    "MemorySize": 1024,
+    "Runtime": "nodejs16.x",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ],
+    "Timeout": 10,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "todoapiLambdaGETtodosServiceRoleDefaultPolicy683067AA",
+    "todoapiLambdaGETtodosServiceRoleCBB56AC4"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Lambda_GET_--todos/Resource",
+    "aws:asset:path": "asset.fd2a2453d64a118f6376dd55284038a80ea0894279813871e091a0ba0b3184c8",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "todoapiRouteGETtodosIntegrationGETtodos16355106": {
+   "Type": "AWS::ApiGatewayV2::Integration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "todoapiApiAECA3C41"
+    },
+    "IntegrationType": "AWS_PROXY",
+    "IntegrationUri": {
+     "Fn::GetAtt": [
+      "todoapiLambdaGETtodosCECB16B3",
+      "Arn"
+     ]
+    },
+    "PayloadFormatVersion": "2.0"
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Route_GET_--todos/Integration_GET_--todos/Resource"
+   }
+  },
+  "todoapiRouteGETtodosIntegrationGETtodosPermission05089A99": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "todoapiLambdaGETtodosCECB16B3",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611136087147:",
+       {
+        "Ref": "todoapiApiAECA3C41"
+       },
+       "/*/*/todos"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Route_GET_--todos/Integration_GET_--todos-Permission"
+   }
+  },
+  "todoapiRouteGETtodos69A97D75": {
+   "Type": "AWS::ApiGatewayV2::Route",
+   "Properties": {
+    "ApiId": {
+     "Ref": "todoapiApiAECA3C41"
+    },
+    "RouteKey": "GET /todos",
+    "AuthorizationType": "AWS_IAM",
+    "Target": {
+     "Fn::Join": [
+      "",
+      [
+       "integrations/",
+       {
+        "Ref": "todoapiRouteGETtodosIntegrationGETtodos16355106"
+       }
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Route_GET_--todos/Resource"
+   }
+  },
+  "todoapiLambdaPOSTtodosServiceRole127791F0": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Lambda_POST_--todos/ServiceRole/Resource"
+   }
+  },
+  "todoapiLambdaPOSTtodosServiceRoleDefaultPolicy6D92CB78": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": "rds-data:*",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":rds:us-east-1:611136087147:cluster:",
+          {
+           "Fn::ImportValue": "localhost-todo-sst-Database:ExportsOutputRefDatabaseCluster5B53A178FF23F606"
+          }
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "localhost-todo-sst-Database:ExportsOutputRefClusterCredentialsAttachment18127CAD3A3909CB"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "todoapiLambdaPOSTtodosServiceRoleDefaultPolicy6D92CB78",
+    "Roles": [
+     {
+      "Ref": "todoapiLambdaPOSTtodosServiceRole127791F0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Lambda_POST_--todos/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "todoapiLambdaPOSTtodosFAF8A258": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-611136087147-us-east-1",
+     "S3Key": "783354ac2d0170776f52b8c0d9d99920e43fee2375c7c7910f0d95e2c6231856.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "todoapiLambdaPOSTtodosServiceRole127791F0",
+      "Arn"
+     ]
+    },
+    "Environment": {
+     "Variables": {
+      "RDS_SECRET_ARN": {
+       "Fn::ImportValue": "localhost-todo-sst-Database:ExportsOutputRefClusterCredentialsAttachment18127CAD3A3909CB"
+      },
+      "RDS_ARN": {
+       "Fn::Join": [
+        "",
+        [
+         "arn:",
+         {
+          "Ref": "AWS::Partition"
+         },
+         ":rds:us-east-1:611136087147:cluster:",
+         {
+          "Fn::ImportValue": "localhost-todo-sst-Database:ExportsOutputRefDatabaseCluster5B53A178FF23F606"
+         }
+        ]
+       ]
+      },
+      "RDS_DATABASE": "todo",
+      "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+     }
+    },
+    "EphemeralStorage": {
+     "Size": 512
+    },
+    "Handler": "services/todo/functions/create.main",
+    "MemorySize": 1024,
+    "Runtime": "nodejs16.x",
+    "Tags": [
+     {
+      "Key": "sst:app",
+      "Value": "todo-sst"
+     },
+     {
+      "Key": "sst:stage",
+      "Value": "localhost"
+     }
+    ],
+    "Timeout": 10,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "todoapiLambdaPOSTtodosServiceRoleDefaultPolicy6D92CB78",
+    "todoapiLambdaPOSTtodosServiceRole127791F0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Lambda_POST_--todos/Resource",
+    "aws:asset:path": "asset.783354ac2d0170776f52b8c0d9d99920e43fee2375c7c7910f0d95e2c6231856",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "todoapiRoutePOSTtodosIntegrationPOSTtodos08466692": {
+   "Type": "AWS::ApiGatewayV2::Integration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "todoapiApiAECA3C41"
+    },
+    "IntegrationType": "AWS_PROXY",
+    "IntegrationUri": {
+     "Fn::GetAtt": [
+      "todoapiLambdaPOSTtodosFAF8A258",
+      "Arn"
+     ]
+    },
+    "PayloadFormatVersion": "2.0"
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Route_POST_--todos/Integration_POST_--todos/Resource"
+   }
+  },
+  "todoapiRoutePOSTtodosIntegrationPOSTtodosPermissionAD4ED804": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "todoapiLambdaPOSTtodosFAF8A258",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:611136087147:",
+       {
+        "Ref": "todoapiApiAECA3C41"
+       },
+       "/*/*/todos"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Route_POST_--todos/Integration_POST_--todos-Permission"
+   }
+  },
+  "todoapiRoutePOSTtodos248D0AD4": {
+   "Type": "AWS::ApiGatewayV2::Route",
+   "Properties": {
+    "ApiId": {
+     "Ref": "todoapiApiAECA3C41"
+    },
+    "RouteKey": "POST /todos",
+    "AuthorizationType": "AWS_IAM",
+    "Target": {
+     "Fn::Join": [
+      "",
+      [
+       "integrations/",
+       {
+        "Ref": "todoapiRoutePOSTtodosIntegrationPOSTtodos08466692"
+       }
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/todo-api/Route_POST_--todos/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/01Qy27DIBD8Ft/xxnYf5yaV+pAqNXI/INrYlBLbgLyQKEL8ewEnkk8zy8ygnW2geQRfFXihsuuHcpRH8D8Wu4G9/qqWk3Zzx1mUDx6NFGj5Ba/nBnyUt0YmV7QLnsinslzMaKVWOa2d5YGNWhD4Ly3eZ+1MEu48ajgdewT/5lR3j635ns+TJIpTYBIn8K0e+fJ3xL0eZXfNvswCo4cDEnFLsE0QZ9i5buB2hxRXyY9pXalEin07a5wNrCpxNH8IVfFyO8Qm4brwzeE/rDWpd8KleGK5amarG4TAlO45nGhzrp+hfoK6OJGU5eyUlROHdsF/eyaqgoQBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "localhost-todo-sst-Api/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "APIURL": {
+   "Value": {
+    "Fn::GetAtt": [
+     "todoapiApiAECA3C41",
+     "ApiEndpoint"
+    ]
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
