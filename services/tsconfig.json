@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["functions", "todo/core"],
+  "compilerOptions": {
+    "strict": true,
+    "module": "esnext",
+    "target": "es2017",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@todo-sst/core/*": ["todo/core/*"]
+    }
+  }
+}
